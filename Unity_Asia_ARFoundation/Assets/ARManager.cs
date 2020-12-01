@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.XR.ARFoundation;
+using UnityEngine.XR.ARSubsystems;
 using System.Collections.Generic;
 
 // 點擊地面後生成物件; RC要求元件:在第一次點擊後套用腳本執行
@@ -18,14 +19,21 @@ public class ARManager : MonoBehaviour
 
     private void Tap()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))                               // 判斷玩家是否有點擊
-        {
-            pointMouse = Input.mousePosition;                                   //  遊戲滑鼠座標=玩家滑鼠座標
-            print(pointMouse);
+        // 判斷玩家是否有點擊
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        { 
+            // 遊戲滑鼠座標=玩家滑鼠座標
+            pointMouse = Input.mousePosition;
+            // 判斷是否打到物件
+            if (arManager.Raycast(pointMouse,hits,TrackableType.PlaneWithinPolygon))
+            {
+                // 生成物件(物件,最標,角度)
+                Instantiate(obj, hits[0].pose.position, Quaternion.identity);
+            }
         } 
     }
    
-    private void Update()                                                                   // 生成物件
+    private void Update()                                                                   
     {
         Tap();
     }
